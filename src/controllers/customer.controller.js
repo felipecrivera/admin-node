@@ -16,7 +16,7 @@ const signin = async (req, res, next) => {
           { id: dbCustomer._id },
           process.env.JWT_SECRET_KEY,
           {
-            expiresIn: "1hr",
+            expiresIn: "365d",
           }
         );
 
@@ -66,6 +66,15 @@ const signup = async (req, res, next) => {
   }
 };
 
+const me = async (req, res, next) => {
+  try {
+    const customers = await Customer.find({}, { password: 0 });
+    res.status(201).json(customers);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const get = async (req, res, next) => {
   try {
     const customers = await Customer.find({}, { password: 0 });
@@ -74,6 +83,7 @@ const get = async (req, res, next) => {
     next(error);
   }
 };
+
 const getDashboard = async (req, res, next) => {
   try {
     const userId = req.params.id;
@@ -85,4 +95,4 @@ const getDashboard = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = { signin, signup, get, edit, getDashboard };
+module.exports = { signin, signup, get, edit, getDashboard, me };
