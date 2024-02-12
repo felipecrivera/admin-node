@@ -2,6 +2,7 @@ const errorHandler = require("../utils/error.js");
 const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
 const Customer = require("../models/customer.model.js");
+const Record = require("../models/record.model.js");
 
 const signin = async (req, res, next) => {
   try {
@@ -77,7 +78,9 @@ const getDashboard = async (req, res, next) => {
   try {
     const userId = req.params.id;
     const customer = await Customer.findById(userId, { password: 0 });
-    res.status(201).json(customer);
+    const customerEmail = customer.email
+    const records = await Record.find({email: customerEmail});
+    res.status(201).json(records);
   } catch (error) {
     next(error);
   }
