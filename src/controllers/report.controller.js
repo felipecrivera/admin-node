@@ -11,24 +11,26 @@ const search = async (req, res, next) => {
     if (searchTerm) {
       filters["$or"] = [
         { firstName: { $regex: searchTerm, $options: "i" } },
+        { lastName: { $regex: searchTerm, $options: "i" } },
         { campaign: { $regex: searchTerm, $options: "i" } },
+        { title: { $regex: searchTerm, $options: "i" } },
       ];
     }
     if (startDate && endDate) {
       filters["bookingDate"] = {
-        $gte: ISODate(startDate),
-        $lt: ISODate(endDate),
+        $gte: startDate,
+        $lt: endDate,
       };
     } else {
       if (startDate) {
         filters["bookingDate"] = {
-          $gte: ISODate(startDate),
+          $gte: startDate,
         };
       }
 
       if (endDate) {
         filters["bookingDate"] = {
-          $lt: ISODate(endDate),
+          $lt: endDate,
         };
       }
     }
