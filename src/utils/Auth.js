@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const errorHandler = require("./error.js");
 
 const verifyToken = (req, res, next) => {
-  const token = req.cookies["access-token"];
+  const token = req.headers["x-access-token"];
+
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
       if (err) {

@@ -1,9 +1,11 @@
 const errorHandler = require("../utils/error.js");
 const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
+const Customer = require("../models/customer.model.js");
 
 const signin = async (req, res, next) => {
   try {
+    console.log(req.body);
     const { email, password } = req.body;
     const dbCustomer = await Customer.findOne({ email });
     if (dbCustomer) {
@@ -18,10 +20,7 @@ const signin = async (req, res, next) => {
         );
 
         const { password: pass, ...rest } = dbCustomer._doc;
-        res
-          .cookie("access-token", token, { httpOnly: true })
-          .status(200)
-          .json({ customer: rest });
+        res.status(200).json({ customer: rest, token });
       } else {
         return next(errorHandler(401, "Wrong credentials"));
       }
@@ -35,6 +34,7 @@ const signin = async (req, res, next) => {
 
 const signup = async (req, res, next) => {
   try {
+    console.log(req.body);
     const { firstName, lastName, email, password } = req.body;
     const hashedPassword = await bcryptjs.hash(password, 10);
     await Customer.create({
@@ -48,4 +48,22 @@ const signup = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = { signin, signup };
+
+const get = async (req, res, next) => {
+  try {
+    const customers = await Customer.find({}, { password: 0 });
+    res.status(201).json(customers);
+  } catch (error) {
+    next(error);
+  }
+};
+const getDashboard = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const customer = await Customer.findById(userId, { password: 0 });
+    res.status(201).json(customer);
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports = { signin, signup, get, getDashboard };

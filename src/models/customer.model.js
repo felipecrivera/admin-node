@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const customerSchema = mongoose.Schema(
   {
-    firtName: {
+    firstName: {
       type: String,
       required: true,
     },
@@ -25,4 +25,4 @@ const customerSchema = mongoose.Schema(
 
 const Customer = mongoose.model("Customer", customerSchema);
 
-export default Customer;
+module.exports = Customer;
