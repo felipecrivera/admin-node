@@ -31,6 +31,22 @@ const signin = async (req, res, next) => {
     next(error);
   }
 };
+const edit = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const record = await Customer.findById(id);
+    if (record) {
+      const updatedRecord = await Customer.findByIdAndUpdate(id, req.body, {
+        new: true,
+      });
+      return res.status(200).json(updatedRecord);
+    } else {
+      return next(errorHandler(404, "Customer not found"));
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 
 const signup = async (req, res, next) => {
   try {
@@ -66,4 +82,4 @@ const getDashboard = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = { signin, signup, get, getDashboard };
+module.exports = { signin, signup, get, edit, getDashboard };
