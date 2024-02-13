@@ -4,6 +4,6 @@ const { search } = require("../controllers/report.controller.js");
 
 const router = express.Router();
 
-router.get("/search", verifyToken, search);
+router.post("/search", verifyToken, search);
 
 module.exports = router;

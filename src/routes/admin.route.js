@@ -14,8 +14,8 @@ router.post("/signin", signin);
 router.post("/edit/:id", edit);
 
 router.post("/signup", signup);
-router.get("/get", verifyToken, get);
-router.get("/me", verifyToken, me);
-router.get("/getDashboard/:id", verifyToken, getDashboard);
+router.post("/get", verifyToken, get);
+router.post("/me", verifyToken, me);
+router.post("/getDashboard/:id", verifyToken, getDashboard);
 
 module.exports = router;
