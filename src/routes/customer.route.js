@@ -1,6 +1,7 @@
 const express = require("express");
 const {
   signin,
+  userSignin,
   get,
   signup,
   getDashboard,
@@ -11,6 +12,7 @@ const { verifyToken } = require("../utils/Auth.js");
 const router = express.Router();
 
 router.post("/signin", signin);
+router.post("/usignin", userSignin);
 router.post("/edit/:id", edit);
 
 router.post("/signup", signup);
