@@ -85,16 +85,19 @@ const edit = async (req, res, next) => {
 
 const signup = async (req, res, next) => {
   try {
-    console.log(req.body);
     const { firstName, lastName, email, password } = req.body;
-    const hashedPassword = await bcryptjs.hash(password, 10);
-    await Admin.create({
-      firstName,
-      lastName,
-      email,
-      password: hashedPassword,
-    });
-    res.status(201).json({ message: "Admin created succesfully" });
+    if (email.endsWith('prospectiq.ai')) {
+      const hashedPassword = await bcryptjs.hash(password, 10);
+      await Admin.create({
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+      });
+      res.status(201).json({ message: "Admin created succesfully" });
+    } else {
+      return next(errorHandler(401, "Not Admin Email"));
+    }
   } catch (error) {
     next(error);
   }

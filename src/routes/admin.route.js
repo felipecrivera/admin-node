@@ -1,13 +1,12 @@
 const express = require("express");
 const {
   signin,
-  userSignin,
   get,
   signup,
   getDashboard,
   edit,
   me
-} = require("../controllers/customer.controller.js");
+} = require("../controllers/admin.controller.js");
 const { verifyToken } = require("../utils/Auth.js");
 const router = express.Router();
 
