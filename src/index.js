@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const customerRouter = require("./routes/customer.route.js");
+const adminRouter = require("./routes/admin.route.js");
 const recordRouter = require("./routes/record.route.js");
 const reportRouter = require("./routes/report.route.js");
 dotenv.config();
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors());
 
+app.use("/admin", adminRouter);
 app.use("/customer", customerRouter);
 app.use("/record", recordRouter);
 app.use("/report", reportRouter);

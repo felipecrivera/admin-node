@@ -12,39 +12,6 @@ const signin = async (req, res, next) => {
     if (dbCustomer) {
       const customer = await bcryptjs.compare(password, dbCustomer.password);
       if (customer) {
-        if (email.endsWith('prospectiq.ai')) {
-          const token = jwt.sign(
-            { id: dbCustomer._id },
-            process.env.JWT_SECRET_KEY,
-            {
-              expiresIn: "365d",
-            }
-          );
-
-          const { password: pass, ...rest } = dbCustomer._doc;
-          res.status(200).json({ customer: rest, token });
-        } else {
-          return next(errorHandler(401, "Not Admin Account"));  
-        }
-      } else {
-        return next(errorHandler(401, "Wrong credentials"));
-      }
-    } else {
-      return next(errorHandler(404, "Customer not found"));
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
-const userSignin = async (req, res, next) => {
-  try {
-    console.log(req.body);
-    const { email, password } = req.body;
-    const dbCustomer = await Customer.findOne({ email });
-    if (dbCustomer) {
-      const customer = await bcryptjs.compare(password, dbCustomer.password);
-      if (customer) {
         const token = jwt.sign(
           { id: dbCustomer._id },
           process.env.JWT_SECRET_KEY,
@@ -129,4 +96,4 @@ const getDashboard = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = { signin, signup, get, edit, getDashboard, me, userSignin };
+module.exports = { signin, signup, get, edit, getDashboard, me };
