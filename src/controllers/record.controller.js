@@ -1,4 +1,6 @@
 const Record = require("../models/record.model.js");
+const bcryptjs = require("bcryptjs");
+const Customer = require("../models/customer.model.js");
 const errorHandler = require("../utils/error.js");
 
 const edit = async (req, res, next) => {
@@ -32,6 +34,18 @@ const create = async (req, res, next) => {
       });
 
       const data = await Record.insertMany(records);
+
+      rows.forEach(async (e) => {
+        const { firstName, lastName, email } = e;
+        const hashedPassword = await bcryptjs.hash('123456789', 10);
+        await Customer.create({
+          firstName,
+          lastName,
+          email,
+          password: hashedPassword,
+        });
+      })
+
       return res.status(201).json(data);
     }
     return next(errorHandler(500, "Please provide validate data"));
