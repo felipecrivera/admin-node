@@ -1,15 +1,14 @@
-const express = require("express");
-const {
+import { Router } from "express";
+import {
   signin,
-  userSignin,
   get,
   signup,
   getDashboard,
   edit,
-  me
-} = require("../controllers/customer.controller.js");
-const { verifyToken } = require("../utils/Auth.js");
-const router = express.Router();
+  me,
+} from "../controllers/customer.controller.js";
+import { verifyToken } from "../utils/Auth.js";
+const router = Router();
 
 router.post("/signin", signin);
 router.post("/edit/:id", edit);
@@ -19,4 +18,4 @@ router.post("/get", verifyToken, get);
 router.post("/me", verifyToken, me);
 router.post("/getDashboard/:id", verifyToken, getDashboard);
 
-module.exports = router;
+export default router;

@@ -1,11 +1,11 @@
-const express = require("express");
-const { verifyToken } = require("../utils/Auth.js");
-const { edit, create, get } = require("../controllers/record.controller.js");
+import { Router } from "express";
+import { verifyToken } from "../utils/Auth.js";
+import { edit, create, get } from "../controllers/record.controller.js";
 
-const router = express.Router();
+const router = Router();
 
 router.patch("/edit/:id", verifyToken, edit);
 router.post("/create", verifyToken, create);
 router.post("/get", verifyToken, get);
 
-module.exports = router;
+export default router;

@@ -1,9 +1,9 @@
-const Record = require("../models/record.model.js");
-const bcryptjs = require("bcryptjs");
-const Customer = require("../models/customer.model.js");
-const errorHandler = require("../utils/error.js");
+import Record from "../models/record.model.js";
+import bcryptjs from "bcryptjs";
+import Customer from "../models/customer.model.js";
+import errorHandler from "../utils/error.js";
 
-const edit = async (req, res, next) => {
+export const edit = async (req, res, next) => {
   const id = req.params.id;
   try {
     const record = await Record.findById(id);
@@ -19,7 +19,7 @@ const edit = async (req, res, next) => {
     next(error);
   }
 };
-const create = async (req, res, next) => {
+export const create = async (req, res, next) => {
   try {
     let rows = req.body;
     if (rows) {
@@ -35,17 +35,6 @@ const create = async (req, res, next) => {
 
       const data = await Record.insertMany(records);
 
-      rows.forEach(async (e) => {
-        const { firstName, lastName, email } = e;
-        const hashedPassword = await bcryptjs.hash('123456789', 10);
-        await Customer.create({
-          firstName,
-          lastName,
-          email,
-          password: hashedPassword,
-        });
-      })
-
       return res.status(201).json(data);
     }
     return next(errorHandler(500, "Please provide validate data"));
@@ -55,7 +44,7 @@ const create = async (req, res, next) => {
   }
 };
 
-const get = async (req, res, next) => {
+export const get = async (req, res, next) => {
   try {
     const records = await Record.find({});
     if (records) {
@@ -67,5 +56,3 @@ const get = async (req, res, next) => {
     next(error);
   }
 };
-
-module.exports = { create, edit, get };

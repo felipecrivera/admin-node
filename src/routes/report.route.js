@@ -1,9 +1,9 @@
-const express = require("express");
-const { verifyToken } = require("../utils/Auth.js");
-const { search } = require("../controllers/report.controller.js");
+import { Router } from "express";
+import { verifyToken } from "../utils/Auth.js";
+import { search } from "../controllers/report.controller.js";
 
-const router = express.Router();
+const router = Router();
 
 router.post("/search", verifyToken, search);
 
-module.exports = router;
+export default router;

@@ -1,19 +1,19 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const customerRouter = require("./routes/customer.route.js");
-const adminRouter = require("./routes/admin.route.js");
-const recordRouter = require("./routes/record.route.js");
-const reportRouter = require("./routes/report.route.js");
-dotenv.config();
+import express, { json, urlencoded } from "express";
+import mongoose from "mongoose";
+import { config } from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import customerRouter from "./routes/customer.route.js";
+import adminRouter from "./routes/admin.route.js";
+import recordRouter from "./routes/record.route.js";
+import reportRouter from "./routes/report.route.js";
+config();
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 3000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(json());
+app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors());
 

@@ -1,7 +1,7 @@
-const errorHandler = require("../utils/error.js");
-const Record = require("../models/record.model.js");
+import errorHandler from "../utils/error.js";
+import Record from "../models/record.model.js";
 
-const search = async (req, res, next) => {
+export const search = async (req, res, next) => {
   try {
     const startDate = req.query.startDate || "";
     const endDate = req.query.endDate || "";
@@ -45,5 +45,3 @@ const search = async (req, res, next) => {
     next(error);
   }
 };
-
-module.exports = { search };

@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const customerSchema = mongoose.Schema(
+const customerSchema = Schema(
   {
     firstName: {
       type: String,
@@ -19,10 +19,41 @@ const customerSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    bookingGoal: {
+      type: Number,
+      default: 0,
+    },
+    activationGoal: {
+      type: Number,
+      default: 0,
+    },
+    dashboardDisplay: {
+      type: String,
+      enum: ["Booking", "Activation", "Both"],
+      default: "Both",
+    },
+    visibleDashboards: [
+      {
+        type: String,
+        enum: ["Booking", "Activation"],
+      },
+    ],
+    users: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    campaigns: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Campaign",
+      },
+    ],
   },
   { timestamps: true }
 );
 
-const Customer = mongoose.model("Customer", customerSchema);
+const Customer = model("Customer", customerSchema);
 
-module.exports = Customer;
+export default Customer;

@@ -1,16 +1,15 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const recordSchema = mongoose.Schema(
+const recordSchema = Schema(
   {
     activationDate: {
       type: String,
     },
-    campaign: {
-      type: String,
+    customer: {
+      type: Schema.Types.ObjectId,
+      ref: "Customer",
     },
-    company: {
-      type: String,
-    },
+    campaign: { type: Schema.Types.ObjectId, ref: "Campaign" },
     firstName: {
       type: String,
     },
@@ -39,8 +38,10 @@ const recordSchema = mongoose.Schema(
     zipCode: {
       type: String,
     },
-    outCome: {
+    outcome: {
       type: String,
+      enum: ["Booked Appt", "Send Info", "Callback"],
+      required: true,
     },
     bookingDate: {
       type: String,
@@ -55,6 +56,6 @@ const recordSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const Record = mongoose.model("Record", recordSchema);
+const Record = model("Record", recordSchema);
 
-module.exports = Record;
+export default Record;
