@@ -41,7 +41,7 @@ export const create = async (req, res, next) => {
           obj[key.trim()] = item[key];
         });
 
-        const {
+        let {
           AccountName,
           AccountId,
           email,
@@ -50,8 +50,26 @@ export const create = async (req, res, next) => {
         } = obj;
 
         if (AccountId) {
-          const customer = await Customer.find({ AccountId: AccountId });
-          const campaign = await Campaign.find({ type: outCome });
+          let {
+            activationDate,
+            firstName,
+            lastName,
+            title,
+            email,
+            phone,
+            company,
+            address,
+            city,
+            state,
+            zipCode,
+            outCome,
+            bookingDate,
+            bookingTime,
+            notes,
+          } = obj;
+          const customer = await Customer.findOne({ AccountId: AccountId });
+          console.log(customer, 'customer calculated +++')
+          const campaign = await Campaign.findOne({ name: campaignName });
 
           if (!customer) {
             customer = await Customer.create({
@@ -68,22 +86,7 @@ export const create = async (req, res, next) => {
               customer: customer._id,
             });
           }
-          const {
-            activationDate,
-            firstName,
-            lastName,
-            title,
-            email,
-            phone,
-            address,
-            city,
-            state,
-            zipCode,
-            outCome,
-            bookingDate,
-            bookingTime,
-            notes,
-          } = obj;
+
 
           const data = await Record.create({
             activationDate,
@@ -94,6 +97,7 @@ export const create = async (req, res, next) => {
             title,
             email,
             phone,
+            company,
             address,
             city,
             state,
