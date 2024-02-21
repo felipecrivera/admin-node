@@ -2,22 +2,20 @@ import { Schema, model } from "mongoose";
 
 const customerSchema = Schema(
   {
-    firstName: {
+    AccountName: {
       type: String,
       required: true,
     },
-    lastName: {
-      type: String,
-      required: true,
-    },
-    email: {
+    AccountId: {
       type: String,
       required: true,
       unique: true,
     },
+    email: {
+      type: String,
+    },
     password: {
       type: String,
-      required: true,
     },
     bookingGoal: {
       type: Number,

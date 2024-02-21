@@ -2,6 +2,7 @@ import Record from "../models/record.model.js";
 import bcryptjs from "bcryptjs";
 import Customer from "../models/customer.model.js";
 import errorHandler from "../utils/error.js";
+import Campaign from "../models/campaign.model.js";
 
 export const edit = async (req, res, next) => {
   const id = req.params.id;
@@ -19,23 +20,92 @@ export const edit = async (req, res, next) => {
     next(error);
   }
 };
+export const createOne = async (req, res, next) => {
+  try {
+    const data = await Record.create(req.body);
+    return res.status(201).json(data);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
 export const create = async (req, res, next) => {
   try {
     let rows = req.body;
     if (rows) {
-      let records = rows.map((item) => {
+      rows.forEach(async (item) => {
         let obj = {};
         let keys = Object.keys(item);
 
         keys.forEach((key) => {
           obj[key.trim()] = item[key];
         });
-        return obj;
+
+        const {
+          AccountName,
+          AccountId,
+          email,
+          outCome,
+          campaign: campaignName,
+        } = obj;
+
+        if (AccountId) {
+          const customer = await Customer.find({ AccountId: AccountId });
+          const campaign = await Campaign.find({ type: outCome });
+
+          if (!customer) {
+            customer = await Customer.create({
+              AccountName,
+              AccountId,
+              email,
+            });
+          }
+
+          if (!campaign) {
+            campaign = await Campaign.create({
+              type: outCome,
+              name: campaignName,
+              customer: customer._id,
+            });
+          }
+          const {
+            activationDate,
+            firstName,
+            lastName,
+            title,
+            email,
+            phone,
+            address,
+            city,
+            state,
+            zipCode,
+            outCome,
+            bookingDate,
+            bookingTime,
+            notes,
+          } = obj;
+
+          const data = await Record.create({
+            activationDate,
+            customer: customer._id,
+            campaign: campaign._id,
+            firstName,
+            lastName,
+            title,
+            email,
+            phone,
+            address,
+            city,
+            state,
+            zipCode,
+            outCome,
+            bookingDate,
+            bookingTime,
+            notes,
+          });
+        }
       });
-
-      const data = await Record.insertMany(records);
-
-      return res.status(201).json(data);
+      return res.status(201).json({ message: "Records created succesfully" });
     }
     return next(errorHandler(500, "Please provide validate data"));
   } catch (error) {
@@ -46,7 +116,11 @@ export const create = async (req, res, next) => {
 
 export const get = async (req, res, next) => {
   try {
-    const records = await Record.find({});
+    const records = await Record.find({})
+      .populate("customer")
+      .populate("campaign")
+      .exec();
+    console.log(records);
     if (records) {
       return res.status(200).json(records);
     } else {

@@ -4,6 +4,15 @@ import bcryptjs from "bcryptjs";
 import Customer from "../models/customer.model.js";
 import Record from "../models/record.model.js";
 
+import Conversation from "../models/conversation.model.js";
+import {
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  startOfQuarter,
+  endOfQuarter,
+} from "date-fns";
 export const signin = async (req, res, next) => {
   try {
     console.log(req.body);
@@ -53,11 +62,15 @@ export const edit = async (req, res, next) => {
 export const signup = async (req, res, next) => {
   try {
     console.log(req.body);
-    const { firstName, lastName, email, password } = req.body;
+    const { AccountName, AccountId, email, password } = req.body;
+    if (!email || !password) {
+      next("Please provide valid email and password");
+      return;
+    }
     const hashedPassword = await bcryptjs.hash(password, 10);
     await Customer.create({
-      firstName,
-      lastName,
+      AccountName,
+      AccountId,
       email,
       password: hashedPassword,
     });
@@ -87,11 +100,72 @@ export const get = async (req, res, next) => {
 
 export const getDashboard = async (req, res, next) => {
   try {
-    const userId = req.params.id;
-    const customer = await Customer.findById(userId, { password: 0 });
-    const customerEmail = customer.email;
-    const records = await Record.find({ email: customerEmail });
-    res.status(201).json(records);
+    const customerId = req.params.id;
+    const { filter: currentActiveFilter } = req.body;
+    let records = [],
+      conversations = [];
+
+    if (currentActiveFilter == 1) {
+      console.log("here");
+      records = await Record.find({
+        customer: customerId,
+        bookingDate: {
+          $lte: new Date().toISOString(),
+        },
+      }).exec();
+
+      conversations = await Conversation.find({
+        customer: customerId,
+        date: {
+          $lte: new Date().toISOString(),
+          $gte: new Date().toISOString(),
+        },
+      }).exec();
+      console.log(records, conversations);
+    } else if (currentActiveFilter == 2) {
+      const start = startOfWeek(new Date(), { weekStartsOn: 1 });
+      const end = endOfWeek(new Date(), { weekStartsOn: 1 });
+      records = await Record.find({
+        bookingDate: { $gte: start, $lte: end },
+        customer: customerId,
+      });
+      conversations = await Conversation.find({
+        date: { $gte: start, $lte: end },
+        customer: customerId,
+      });
+    } else if (currentActiveFilter == 3) {
+      const start = startOfMonth(new Date());
+      const end = endOfMonth(new Date());
+      records = await Record.find({
+        bookingDate: { $gte: start, $lte: end },
+        customer: customerId,
+      });
+      conversations = await Conversation.find({
+        date: { $gte: start, $lte: end },
+        customer: customerId,
+      });
+    } else if (currentActiveFilter == 4) {
+      const start = startOfQuarter(new Date());
+      const end = endOfQuarter(new Date());
+      records = await Record.find({
+        bookingDate: { $gte: start, $lte: end },
+        customer: customerId,
+      });
+      conversations = await Conversation.find({
+        date: { $gte: start, $lte: end },
+        customer: customerId,
+      });
+    }
+    const bookingRecords = records.filter(
+      (item) => item.outCome == "Booked Appt"
+    );
+
+    res.status(201).json({
+      records,
+      noOfConversations: conversations.length,
+      noOfBookings: bookingRecords.length,
+      noOfActivations: records.length - bookingRecords.length,
+    });
   } catch (error) {
     next(error);
   }

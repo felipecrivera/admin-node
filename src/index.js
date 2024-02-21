@@ -5,8 +5,12 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import customerRouter from "./routes/customer.route.js";
 import adminRouter from "./routes/admin.route.js";
+import userRouter from "./routes/user.route.js";
 import recordRouter from "./routes/record.route.js";
 import reportRouter from "./routes/report.route.js";
+import campaignRouter from "./routes/campaign.route.js";
+import conversationRouter from "./routes/conversation.route.js";
+
 config();
 
 const app = express();
@@ -21,6 +25,9 @@ app.use("/admin", adminRouter);
 app.use("/customer", customerRouter);
 app.use("/record", recordRouter);
 app.use("/report", reportRouter);
+app.use("/user", userRouter);
+app.use("/campaign", campaignRouter);
+app.use("/conversation", conversationRouter);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

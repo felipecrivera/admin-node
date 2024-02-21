@@ -5,6 +5,7 @@ const campaignSchema = new Schema({
   description: String,
   type: {
     type: String,
+    unique: true,
     enum: ["Activate", "Boost"],
   },
   customer: {

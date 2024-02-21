@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose";
 const recordSchema = Schema(
   {
     activationDate: {
-      type: String,
+      type: Date,
     },
     customer: {
       type: Schema.Types.ObjectId,
@@ -11,6 +11,9 @@ const recordSchema = Schema(
     },
     campaign: { type: Schema.Types.ObjectId, ref: "Campaign" },
     firstName: {
+      type: String,
+    },
+    company: {
       type: String,
     },
     lastName: {
@@ -38,13 +41,13 @@ const recordSchema = Schema(
     zipCode: {
       type: String,
     },
-    outcome: {
+    outCome: {
       type: String,
       enum: ["Booked Appt", "Send Info", "Callback"],
       required: true,
     },
     bookingDate: {
-      type: String,
+      type: Date,
     },
     bookingTime: {
       type: String,
