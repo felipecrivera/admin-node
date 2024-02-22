@@ -5,6 +5,6 @@ const router = Router();
 
 router.post("/create", create);
 router.post("/edit/:id", edit);
-router.get("/getAllUser/:id", verifyToken, getAllUsers);
+router.post("/getAllUser/:id", verifyToken, getAllUsers);
 
 export default router;
