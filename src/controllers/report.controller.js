@@ -15,24 +15,43 @@ export const search = async (req, res, next) => {
         .exec();
       return res.status(200).json(records);
     } else {
-      const records = await Record.find(
+      let records = await Record.aggregate([
         {
-          $and: [
-            { campaign: campaign },
-          ],
-          $or: [
-            { firstName: { $regex: searchTerm, $options: "i" } },
-            { lastName: { $regex: searchTerm, $options: "i" } },
-            { title: { $regex: searchTerm, $options: "i" } },
-          ],
+          $lookup: {
+            from: 'customers',
+            localField: 'customer',
+            foreignField: '_id',
+            as: 'customer',
+          }
         },
         {
-          createdAt: 0,
-          updatedAt: 0,
-        }
-      )
-        .populate("campaign")
-        .select("-__v");
+          $lookup: {
+            from: 'campaigns',
+            localField: 'campaign',
+            foreignField: '_id',
+            as: 'campaign',
+          }
+        },
+        {
+          $match: {
+            $or: [
+              { 'customer.AccountId': { $regex: searchTerm, $options: "i" } },
+              { 'customer.AccountName': { $regex: searchTerm, $options: "i" } },
+              { firstName: { $regex: searchTerm, $options: "i" } },
+              { lastName: { $regex: searchTerm, $options: "i" } },
+              { title: { $regex: searchTerm, $options: "i" } },
+            ],
+          },
+        },
+      ]);
+      
+      records=records.map((e) => {
+        e.campaign = e.campaign[0]
+        e.customer = e.customer[0]
+        return e
+      })
+      // .populate("campaign")
+      //   .select("-__v");
       return res.status(200).json(records);
     }
   } catch (error) {
