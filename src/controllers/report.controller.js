@@ -7,8 +7,12 @@ export const search = async (req, res, next) => {
     const endDate = req.query.endDate || "";
     const searchTerm = req.query.searchTerm || "";
     const campaign = req.query.campaign || "";
-    console.log(campaign)
-    if (startDate == "" && endDate == "" && searchTerm == "" && campaign == "") {
+    if (
+      startDate == "" &&
+      endDate == "" &&
+      searchTerm == "" &&
+      campaign == ""
+    ) {
       const records = await Record.find({})
         .populate("customer")
         .populate("campaign")
@@ -18,25 +22,25 @@ export const search = async (req, res, next) => {
       let records = await Record.aggregate([
         {
           $lookup: {
-            from: 'customers',
-            localField: 'customer',
-            foreignField: '_id',
-            as: 'customer',
-          }
+            from: "customers",
+            localField: "customer",
+            foreignField: "_id",
+            as: "customer",
+          },
         },
         {
           $lookup: {
-            from: 'campaigns',
-            localField: 'campaign',
-            foreignField: '_id',
-            as: 'campaign',
-          }
+            from: "campaigns",
+            localField: "campaign",
+            foreignField: "_id",
+            as: "campaign",
+          },
         },
         {
           $match: {
             $or: [
-              { 'customer.AccountId': { $regex: searchTerm, $options: "i" } },
-              { 'customer.AccountName': { $regex: searchTerm, $options: "i" } },
+              { "customer.AccountId": { $regex: searchTerm, $options: "i" } },
+              { "customer.AccountName": { $regex: searchTerm, $options: "i" } },
               { firstName: { $regex: searchTerm, $options: "i" } },
               { lastName: { $regex: searchTerm, $options: "i" } },
               { title: { $regex: searchTerm, $options: "i" } },
@@ -44,14 +48,14 @@ export const search = async (req, res, next) => {
           },
         },
       ]);
-      
-      records=records.map((e) => {
-        e.campaign = e.campaign[0]
-        e.customer = e.customer[0]
-        return e
-      })
-      // .populate("campaign")
-      //   .select("-__v");
+
+      records = records.map((e) => {
+        e.campaign = e.campaign[0];
+        e.customer = e.customer[0];
+        return e;
+      });
+      if (campaign) records = records.filter((e) => e.campaign._id == campaign);
+
       return res.status(200).json(records);
     }
   } catch (error) {
