@@ -11,7 +11,6 @@ import {
 } from "date-fns";
 export const create = async (req, res, next) => {
   try {
-    console.log(req.body);
     const parent = await Customer.findById(req.body.customer);
 
     const { type, campaignName, description, customer } = req.body;

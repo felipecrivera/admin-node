@@ -4,8 +4,6 @@ import Customer from "../models/customer.model.js";
 
 export const create = async (req, res, next) => {
   try {
-    console.log("here");
-
     const conversations = req.body;
     if (conversations) {
       const promises = conversations.map((item) => {
@@ -14,7 +12,6 @@ export const create = async (req, res, next) => {
 
           Customer.find({ AccountId: AccountId })
             .then((parent) => {
-              console.log(parent);
               let parentId = "";
               if (parent) {
                 parentId = parent[0]._id;

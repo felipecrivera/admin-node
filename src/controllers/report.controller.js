@@ -6,7 +6,9 @@ export const search = async (req, res, next) => {
     const startDate = req.query.startDate || "";
     const endDate = req.query.endDate || "";
     const searchTerm = req.query.searchTerm || "";
-    if (startDate == "" && endDate == "" && searchTerm == "") {
+    const campaign = req.query.campaign || "";
+    console.log(campaign)
+    if (startDate == "" && endDate == "" && searchTerm == "" && campaign == "") {
       const records = await Record.find({})
         .populate("customer")
         .populate("campaign")
@@ -15,10 +17,12 @@ export const search = async (req, res, next) => {
     } else {
       const records = await Record.find(
         {
+          $and: [
+            { campaign: campaign },
+          ],
           $or: [
             { firstName: { $regex: searchTerm, $options: "i" } },
             { lastName: { $regex: searchTerm, $options: "i" } },
-            { campaign: { $regex: searchTerm, $options: "i" } },
             { title: { $regex: searchTerm, $options: "i" } },
           ],
         },
@@ -29,7 +33,6 @@ export const search = async (req, res, next) => {
       )
         .populate("campaign")
         .select("-__v");
-      console.log(records);
       return res.status(200).json(records);
     }
   } catch (error) {

@@ -4,7 +4,6 @@ import Customer from "../models/customer.model.js";
 
 export const create = async (req, res, next) => {
   try {
-    console.log(req.body);
     const parent = await Customer.findById(req.body.customer);
 
     const { firstName, lastName, email, title, phoneNumber, customer } =

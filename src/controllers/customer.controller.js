@@ -15,7 +15,6 @@ import {
 } from "date-fns";
 export const signin = async (req, res, next) => {
   try {
-    console.log(req.body);
     const { email, password } = req.body;
     const dbCustomer = await Customer.findOne({ email });
     if (dbCustomer) {
@@ -61,7 +60,6 @@ export const edit = async (req, res, next) => {
 
 export const signup = async (req, res, next) => {
   try {
-    console.log(req.body);
     const { AccountName, AccountId, email, password } = req.body;
     if (!email || !password) {
       next("Please provide valid email and password");
@@ -106,7 +104,6 @@ export const getDashboard = async (req, res, next) => {
       conversations = [];
 
     if (currentActiveFilter == 1) {
-      console.log("here");
       records = await Record.find({
         customer: customerId,
         bookingDate: {
@@ -121,7 +118,6 @@ export const getDashboard = async (req, res, next) => {
           $gte: new Date().toISOString(),
         },
       }).exec();
-      console.log(records, conversations);
     } else if (currentActiveFilter == 2) {
       const start = startOfWeek(new Date(), { weekStartsOn: 1 });
       const end = endOfWeek(new Date(), { weekStartsOn: 1 });

@@ -68,7 +68,6 @@ export const create = async (req, res, next) => {
             notes,
           } = obj;
           const customer = await Customer.findOne({ AccountId: AccountId });
-          console.log(customer, 'customer calculated +++')
           const campaign = await Campaign.findOne({ name: campaignName });
 
           if (!customer) {
@@ -124,7 +123,6 @@ export const get = async (req, res, next) => {
       .populate("customer")
       .populate("campaign")
       .exec();
-    console.log(records);
     if (records) {
       return res.status(200).json(records);
     } else {

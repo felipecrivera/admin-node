@@ -15,7 +15,6 @@ import {
 
 export const signin = async (req, res, next) => {
   try {
-    console.log(req.body);
     const { email, password } = req.body;
     const dbAdmin = await Admin.findOne({ email });
     if (dbAdmin) {
@@ -48,7 +47,6 @@ export const signin = async (req, res, next) => {
 
 export const userSignin = async (req, res, next) => {
   try {
-    console.log(req.body);
     const { email, password } = req.body;
     const dbAdmin = await Admin.findOne({ email });
     if (dbAdmin) {
@@ -135,25 +133,25 @@ export const getDashboard = async (req, res, next) => {
     const customerId = req.params.id;
     const { filter: currentActiveFilter } = req.body;
     let records = [],
-      conversations = [];
+    conversations = [];
 
     if (currentActiveFilter == 1) {
-      console.log("here");
       records = await Record.find({
         customer: customerId,
-        bookingDate: {
-          $lte: new Date().toISOString(),
-        },
+        // bookingDate: {
+        //   $lte: new Date().toISOString(),
+        // },
       }).exec();
 
       conversations = await Conversation.find({
         customer: customerId,
-        date: {
-          $lte: new Date().toISOString(),
-          $gte: new Date().toISOString(),
-        },
+        // date: {
+        //   $lte: new Date().toISOString(),
+        //   $gte: new Date().toISOString(),
+        // },
       }).exec();
-      console.log(records, conversations);
+
+      console.log(records, '+++++')
     } else if (currentActiveFilter == 2) {
       const start = startOfWeek(new Date(), { weekStartsOn: 1 });
       const end = endOfWeek(new Date(), { weekStartsOn: 1 });
@@ -191,10 +189,10 @@ export const getDashboard = async (req, res, next) => {
     const bookingRecords = records.filter(
       (item) => item.outCome == "Booked Appt"
     );
-
+      console.log(conversations, '+++')
     res.status(201).json({
       records,
-      noOfConversations: conversations.length,
+      noOfConversations: conversations.reduce((a, c) => a + c['count'], 0),
       noOfBookings: bookingRecords.length,
       noOfActivations: records.length - bookingRecords.length,
     });
