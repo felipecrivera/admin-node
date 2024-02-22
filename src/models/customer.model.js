@@ -4,11 +4,9 @@ const customerSchema = Schema(
   {
     AccountName: {
       type: String,
-      required: true,
     },
     AccountId: {
       type: String,
-      required: true,
       unique: true,
     },
     email: {

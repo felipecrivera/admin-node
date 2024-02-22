@@ -24,7 +24,6 @@ const recordSchema = Schema(
     },
     email: {
       type: String,
-      required: true,
     },
     phone: {
       type: String,
@@ -44,7 +43,6 @@ const recordSchema = Schema(
     outCome: {
       type: String,
       enum: ["Booked Appt", "Send Info", "Callback"],
-      required: true,
     },
     bookingDate: {
       type: Date,
