@@ -76,22 +76,32 @@ export const edit = async (req, res, next) => {
 
 export const signup = async (req, res, next) => {
   try {
-    const { AccountName, AccountId, email, password } = req.body;
-    
-    if (password)
+    var { AccountName, AccountId, email, password } = req.body;
+
+    if (password) {
       password = await bcryptjs.hash(password, 10);
-    await Customer.create({
-      AccountName,
-      AccountId,
-      email,
-      password: password,
-    });
+      let customer = await Customer.findOne({
+        AccountId: AccountId,
+        AccountName: AccountName,
+      });
+      if (customer)
+        await Customer.findByIdAndUpdate(customer._id, {
+          email,
+          password,
+        });
+    } else {
+      await Customer.create({
+        AccountName,
+        AccountId,
+        email,
+        password: password,
+      });
+    }
     res.status(201).json({ message: "Customer created succesfully" });
   } catch (error) {
     next(error);
   }
 };
-
 
 export const signupUser = async (req, res, next) => {
   try {
