@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import Customer from "../models/customer.model.js";
 import Record from "../models/record.model.js";
-
+import User from "../models/user.model.js";
 import Conversation from "../models/conversation.model.js";
 import {
   startOfWeek,
@@ -17,6 +17,9 @@ export const signin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const dbCustomer = await Customer.findOne({ email });
+    const dbUser = await User.findOne({ email }).populate("customer");
+    console.log(dbUser);
+
     if (dbCustomer) {
       const customer = await bcryptjs.compare(password, dbCustomer.password);
       if (customer) {
@@ -30,6 +33,19 @@ export const signin = async (req, res, next) => {
 
         const { password: pass, ...rest } = dbCustomer._doc;
         res.status(200).json({ customer: rest, token });
+      } else {
+        return next(errorHandler(401, "Wrong credentials"));
+      }
+    } else if (dbUser) {
+      const user = await bcryptjs.compare(password, dbUser.password);
+      if (user) {
+        const token = jwt.sign({ id: dbUser._id }, process.env.JWT_SECRET_KEY, {
+          expiresIn: "365d",
+        });
+
+        const { password: pass, ...rest } = dbUser._doc;
+        const { password: cusPass, ...customer } = dbUser._doc.customer._doc;
+        res.status(200).json({ user: rest, customer, token });
       } else {
         return next(errorHandler(401, "Wrong credentials"));
       }
@@ -73,6 +89,29 @@ export const signup = async (req, res, next) => {
       password: hashedPassword,
     });
     res.status(201).json({ message: "Customer created succesfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+export const signupUser = async (req, res, next) => {
+  try {
+    const { AccountName, AccountId, email, userId, password } = req.body;
+    if (!email || !password) {
+      next("Please provide valid data");
+      return;
+    }
+    const customer = await Customer.find({ AccountId: AccountId });
+    const customerValue = customer[0];
+    const hashedPassword = await bcryptjs.hash(password, 10);
+    await User.create({
+      AccountName,
+      AccountId,
+      email,
+      userId,
+      password: hashedPassword,
+      customer: customerValue?._id,
+    });
+    res.status(201).json({ message: "User created succesfully" });
   } catch (error) {
     next(error);
   }
