@@ -77,22 +77,22 @@ export const edit = async (req, res, next) => {
 export const signup = async (req, res, next) => {
   try {
     const { AccountName, AccountId, email, password } = req.body;
-    if (!email || !password) {
-      next("Please provide valid email and password");
-      return;
-    }
-    const hashedPassword = await bcryptjs.hash(password, 10);
+    
+    if (password)
+      password = await bcryptjs.hash(password, 10);
     await Customer.create({
       AccountName,
       AccountId,
       email,
-      password: hashedPassword,
+      password: password,
     });
     res.status(201).json({ message: "Customer created succesfully" });
   } catch (error) {
     next(error);
   }
 };
+
+
 export const signupUser = async (req, res, next) => {
   try {
     const { AccountName, AccountId, email, userId, password } = req.body;
