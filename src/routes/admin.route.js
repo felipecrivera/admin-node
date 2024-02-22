@@ -16,6 +16,6 @@ router.post("/edit/:id", edit);
 router.post("/signup", signup);
 router.post("/get", verifyToken, get);
 router.post("/me", verifyToken, me);
-router.post("/getDashboard/:id", verifyToken, getDashboard);
+router.post("/getDashboard/:type/:id", verifyToken, getDashboard);
 
 export default router;

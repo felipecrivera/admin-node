@@ -10,6 +10,8 @@ export const create = async (req, res, next) => {
         return new Promise((res, rej) => {
           const { date, count, AccountId } = item;
 
+          const dt = new Date()
+
           Customer.find({ AccountId: AccountId })
             .then((parent) => {
               let parentId = "";
@@ -17,7 +19,7 @@ export const create = async (req, res, next) => {
                 parentId = parent[0]._id;
               }
               return Conversation.create({
-                date,
+                date: dt,
                 count,
                 customer: parentId,
               });
