@@ -42,7 +42,7 @@ const recordSchema = Schema(
     },
     outCome: {
       type: String,
-      enum: ["Booked Appt", "Send Info", "Callback"],
+      enum: ["Booked Appt", "Send Info", "Callback", ""],
     },
     bookingDate: {
       type: Date,
