@@ -79,8 +79,10 @@ export const create = async (req, res, next) => {
           }
 
           if (!campaign) {
+            let type = (outCome == "Booked Appt") ? "Boost" : "Activate"
+
             campaign = await Campaign.create({
-              type: outCome,
+              type: type,
               name: campaignName,
               customer: customer._id,
             });
