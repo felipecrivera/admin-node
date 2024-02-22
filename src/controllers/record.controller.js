@@ -67,7 +67,7 @@ export const create = async (req, res, next) => {
             bookingTime,
             notes,
           } = obj;
-          const customer = await Customer.findOne({ AccountId: AccountId });
+          var customer = await Customer.findOne({ AccountId: AccountId });
           let campaign = await Campaign.findOne({ name: campaignName });
 
           if (!customer) {
